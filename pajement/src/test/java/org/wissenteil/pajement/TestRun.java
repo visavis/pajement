@@ -16,11 +16,11 @@ public class TestRun {
 
 	@BeforeClass
 	public static void setUp() {
-		System.setProperty("webdriver.chrome.driver",
-				"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chromedriver.exe");
+		TestHelper.setDriver();
+//		System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
 		driver = new ChromeDriver();
 	}
-
+	
 	@AfterClass
 	public static void tearDown() {
 		driver.quit();
