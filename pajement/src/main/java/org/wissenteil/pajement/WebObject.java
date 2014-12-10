@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 
 public class WebObject {
 	WebDriver driver = TestRun.driver;
-	String location = "";
+	String location = "//*";
 	String url;
 	int indexPosition;
 
@@ -128,8 +128,7 @@ public class WebObject {
 	 */
 
 	public int count() {
-		return list().length;
-		
+		return list().length;		
 	}
 	
 	public String text(){
@@ -137,6 +136,6 @@ public class WebObject {
 	}
 	
 	public boolean hasText(String text) {
-		return driver.findElement(By.xpath("//[text()[contains(normalize-space(), '" + text + "')]]")).isDisplayed();
+		return containing(text).isVisible();
 	}
 }

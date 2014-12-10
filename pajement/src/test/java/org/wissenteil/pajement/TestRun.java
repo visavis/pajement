@@ -1,6 +1,6 @@
 package org.wissenteil.pajement;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
@@ -16,7 +16,8 @@ public class TestRun {
 
 	@BeforeClass
 	public static void setUp() {
-		System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
+		System.setProperty("webdriver.chrome.driver",
+				"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chromedriver.exe");
 		driver = new ChromeDriver();
 	}
 
@@ -34,17 +35,19 @@ public class TestRun {
 		assertTrue(google.menu.isVisible());
 		google.menu.searchInput.type("something to search");
 		google.containing("IS there a way to search my timeline for something I posted ...").printLocation();
-		google.menu.containing("IS there a way to search my timeline for something I posted ...").printLocation();
+		google.menu.containing("To search for something or someone - synonyms or related ...").printLocation();
 		Thread.sleep(1000);
 		google.menu.searchButton.click();
 		Thread.sleep(1000);
 		System.out.println(google.menu.resultsList.result.count());
 		Thread.sleep(1000);
 		assertTrue(google.menu.resultsList.result.isVisible());
-		System.out.println(google.containing("IS there a way to search my timeline for something I posted ...").text());
+		System.out.println(google.containing("To search for something or someone - synonyms or related ...").text());
 		assertEquals(10, google.menu.resultsList.result.count());
-		System.out.println(google.menu.resultsList.result.last().text());
-		google.menu.resultsList.result.last().click();
+		System.out.println(google.menu.resultsList.result.first().text());
+		assertTrue(google.hasText("To search for something or someone - synonyms or related ..."));
+		assertTrue(google.menu.resultsList.result.containing("To search for something or someone - synonyms or related ...").isVisible());
+		google.menu.resultsList.result.containing("To search for something or someone - synonyms or related ...").click();
 		Thread.sleep(2000);
 	}
 }
