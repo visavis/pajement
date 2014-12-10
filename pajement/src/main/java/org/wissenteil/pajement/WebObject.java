@@ -136,6 +136,14 @@ public class WebObject {
 	}
 	
 	public boolean hasText(String text) {
-		return containing(text).isVisible();
+		if (containing(text) != null) {
+			if (containing(text).isVisible()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 }

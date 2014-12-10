@@ -34,9 +34,11 @@ public class TestRun {
 
 		assertTrue(google.menu.isVisible());
 		google.menu.searchInput.type("something to search");
-		google.containing("IS there a way to search my timeline for something I posted ...").printLocation();
+		google.containing("To search for something or someone - synonyms or related ...").printLocation();
 		google.menu.containing("To search for something or someone - synonyms or related ...").printLocation();
 		Thread.sleep(1000);
+//		assertTrue(google.containing("no text here jndjnafjndfjd").isVisible());
+//		assertTrue(google.hasText("no text here jndjnafjndfjd"));
 		google.menu.searchButton.click();
 		Thread.sleep(1000);
 		System.out.println(google.menu.resultsList.result.count());
