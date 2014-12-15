@@ -1,11 +1,10 @@
-package org.wissenteil.pajement;
+package org.pajement.models;
 
 public class WebPage extends WebObject {
-	
 	String url;
 		
 	public WebPage(String url){
-		super();
+		super("//*");
 		setUrl(url);
 		
 	}

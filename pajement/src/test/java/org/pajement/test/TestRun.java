@@ -1,4 +1,4 @@
-package org.wissenteil.pajement;
+package org.pajement.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.pajement.models.GooglePage;
 
 public class TestRun {
 	public static WebDriverWait wait;
@@ -28,8 +29,16 @@ public class TestRun {
 
 	@Test
 	public void testMethod() throws InterruptedException {
+		
+		
 
 		GooglePage google = new GooglePage("http://www.google.pl");
+		
+		google.printLocation();
+		google.menu.printLocation();
+		google.menu.header.printLocation();
+		google.menu.resultsList.result.printLocation();
+		
 		google.load();
 
 		assertTrue(google.menu.isVisible());
@@ -37,8 +46,7 @@ public class TestRun {
 		google.containing("To search for something or someone - synonyms or related ...").printLocation();
 		google.menu.containing("To search for something or someone - synonyms or related ...").printLocation();
 		Thread.sleep(1000);
-//		assertTrue(google.containing("no text here jndjnafjndfjd").isVisible());
-//		assertTrue(google.hasText("no text here jndjnafjndfjd"));
+		
 		google.menu.searchButton.click();
 		Thread.sleep(1000);
 		System.out.println(google.menu.resultsList.result.count());

@@ -1,36 +1,37 @@
-package org.wissenteil.pajement;
+package org.pajement.models;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
+import org.pajement.test.TestRun;
 
 public class WebObject {
 	WebDriver driver = TestRun.driver;
-	String location = "//*";
+	String path = "//*";
 	String url;
 	int indexPosition;
 
 	public WebObject(String... params) {
 		if (params.length == 1) {
-			this.location = params[0];
+			path = params[0];
 		} else if (params.length == 2) {
-			this.location = params[0] + "[text='" + params[1] + "']";
+			path = (params[0] + "[text='" + params[1] + "']");
 		}
 	}
-	
-	public void setIndex(int index){
+
+	public void setIndex(int index) {
 		this.indexPosition = index;
 	}
-	
+
 	public void setLocation(String location) {
-		this.location = location;
+		this.path = location;
 	}
-	
+
 	public void setUrl(String newUrl) {
 		this.url = newUrl;
 	}
-	
+
 	public void load() {
 		driver.get(url);
 	}
@@ -40,79 +41,85 @@ public class WebObject {
 	 * ** Any Selenium method defined for WebElements can be called on those**
 	 * ** those behave like Selenium, if more than one element is found it ***
 	 * ** will grab first one ************************************************
-	 */	
-	
+	 */
+
 	public WebElement element() {
-			return driver.findElement(By.xpath(location));
+		return driver.findElement(By.xpath(path));
 	}
-//	returns nth of found elements
-	//for readability indexing will start from 1 here
-	public WebElement element(int position) {	
-		return driver.findElements(By.xpath(this.location)).get(position);		
+
+	// returns nth of found elements
+	// for readability indexing will start from 1 here
+	public WebElement element(int position) {
+		
+		return driver.findElements(By.xpath(this.path)).get(position);
 	}
-	
-//	returns array of elements - useful when operations such as count need to be performed
+
+	// returns array of elements - useful when operations such as count need to
+	// be performed
 	public WebElement[] elements() {
-		int size = driver.findElements(By.xpath(this.location)).size();
+		int size = driver.findElements(By.xpath(this.path)).size();
 		WebElement[] results = new WebElement[size];
-		for (int i = 0; i < size; i++){
-			results[i] = driver.findElements(By.xpath(this.location)).get(i);
+		for (int i = 0; i < size; i++) {
+			results[i] = driver.findElements(By.xpath(this.path)).get(i);
 		}
 		return results;
 	}
-	
+
 	/*
 	 * ******************* Methods returning WebObjects **********************
 	 */
-	
+
 	public WebObject[] list() {
-		int size = driver.findElements(By.xpath(this.location)).size();
-		WebObject[] results = new WebObject[size];
-		for (int i = 0; i < size; i++){
-			WebObject tempObject = new WebObject(this.location);
-			tempObject.setIndex(i);
-			results[i] = tempObject;
+		try {
+			int size = driver.findElements(By.xpath(this.path)).size();
+			WebObject[] results = new WebObject[size];
+			for (int i = 0; i < size; i++) {
+				WebObject tempObject = new WebObject(this.path);
+				tempObject.setIndex(i);
+				results[i] = tempObject;
+			}
+			return results;
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+			return null;
 		}
-		return results;
 	}
-	
+
 	public WebObject list(int index) {
 		return list()[index];
 	}
-	
+
 	public WebObject first() {
 		return list(0);
 	}
-	
+
 	public WebObject last() {
-		int last = driver.findElements(By.xpath(this.location)).size() - 1;
+		int last = driver.findElements(By.xpath(this.path)).size() - 1;
 		if (last > 0) {
 			return list(last);
 		} else {
 			return list(0);
 		}
 	}
-	
+
 	public WebObject containing(String text) {
-		if (location == "") {
-			return new WebObject("//*[text()[contains(normalize-space(), '" + text + "')]]");
+		if (path == "") {
+			return new WebObject("//*[text()[contains(normalize-space(), '"
+					+ text + "')]]");
 		} else {
-			return new WebObject(this.location + "[text()[contains(normalize-space(), '" + text + "')]]");
+			return new WebObject(this.path
+					+ "[text()[contains(normalize-space(), '" + text + "')]]");
 		}
-	}	
-	
-	// temporary method to check xpath building in early stage of this project.
+	}
+
+	// temporary method to test path building in early stage of this project.
 	public void printLocation() {
-		System.out.println(location);
+		System.out.println(path);
 	}
 
 	/*
 	 * ******************* Actions performed on WebObject **********************
 	 */
-	
-	public boolean isVisible() {
-		return element(indexPosition).isDisplayed();
-	}
 
 	public void type(String text) {
 		element(indexPosition).clear();
@@ -122,27 +129,33 @@ public class WebObject {
 	public void click() {
 		element(indexPosition).click();
 	}
-	
+
 	/*
 	 * ******************* WebObject attributes getters **********************
 	 */
 
 	public int count() {
-		return list().length;		
+		return list().length;
 	}
-	
-	public String text(){
+
+	public String text() {
 		return element(indexPosition).getText();
 	}
-	
+
+	public boolean isVisible() {
+		try {
+			return element().isDisplayed();
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	public boolean hasText(String text) {
-		if (containing(text) != null) {
-			if (containing(text).isVisible()) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
+		try {
+			return containing(text).isVisible();
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}

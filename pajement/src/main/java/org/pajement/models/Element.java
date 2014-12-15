@@ -1,4 +1,4 @@
-package org.wissenteil.pajement;
+package org.pajement.models;
 
 
 
