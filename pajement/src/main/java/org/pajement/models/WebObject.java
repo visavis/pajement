@@ -13,10 +13,24 @@ public class WebObject {
 	int indexPosition;
 
 	public WebObject(String... params) {
-		if (params.length == 1) {
-			path = params[0];
-		} else if (params.length == 2) {
-			path = (params[0] + "[text='" + params[1] + "']");
+		if (params.length > 0) {
+			String xpathed;
+			String givenPath = params[0];
+//TODO Add regexps for tag, id, class and []
+			if (givenPath.matches("(^/+)(.*)")) {
+				xpathed = givenPath;
+			} else {
+				xpathed = "";
+			}
+				
+			
+
+			if (params.length == 1) {
+				path = xpathed;
+			} else if (params.length == 2) {
+				path = (xpathed + "[text='" + params[1] + "']");
+			}
+
 		}
 	}
 
@@ -50,7 +64,7 @@ public class WebObject {
 	// returns nth of found elements
 	// for readability indexing will start from 1 here
 	public WebElement element(int position) {
-		
+
 		return driver.findElements(By.xpath(this.path)).get(position);
 	}
 
