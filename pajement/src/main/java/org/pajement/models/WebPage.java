@@ -16,4 +16,8 @@ public class WebPage extends WebObject {
 	public void load() {
 		driver.get(url);
 	}
+	
+	public void load(String params) {
+		driver.get(url + params);
+	}
 }

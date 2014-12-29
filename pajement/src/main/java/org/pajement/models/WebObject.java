@@ -13,24 +13,18 @@ public class WebObject {
 	int indexPosition;
 
 	public WebObject(String... params) {
-		if (params.length > 0) {
+		if (params.length == 0) {
+			path = "//*";
+		}		
+		if (params.length == 2) {
 			String xpathed;
-			String givenPath = params[0];
+			String givenPath = params[1];
 //TODO Add regexps for tag, id, class and []
 			if (givenPath.matches("(^/+)(.*)")) {
-				xpathed = givenPath;
-			} else {
+				xpathed = params[0] + givenPath;
+			} else if (givenPath.matches("(\\p{Alnum}*)(#?)(\\p{Alnum}*)")) {				
 				xpathed = "";
 			}
-				
-			
-
-			if (params.length == 1) {
-				path = xpathed;
-			} else if (params.length == 2) {
-				path = (xpathed + "[text='" + params[1] + "']");
-			}
-
 		}
 	}
 

@@ -28,9 +28,7 @@ public class TestRun {
 	}
 
 	@Test
-	public void testMethod() throws InterruptedException {
-		
-		
+	public void testMethod() throws InterruptedException {		
 
 		GooglePage google = new GooglePage("http://www.google.pl");
 		
