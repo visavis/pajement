@@ -1,5 +1,8 @@
 package org.pajement.models;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -15,16 +18,56 @@ public class WebObject {
 	public WebObject(String... params) {
 		if (params.length == 0) {
 			path = "//*";
-		}		
+		}
 		if (params.length == 2) {
 			String xpathed;
 			String givenPath = params[1];
-//TODO Add regexps for tag, id, class and []
+			// TODO Add regexps for tag, id, class and []
 			if (givenPath.matches("(^/+)(.*)")) {
-				xpathed = params[0] + givenPath;
-			} else if (givenPath.matches("(\\p{Alnum}*)(#?)(\\p{Alnum}*)")) {				
-				xpathed = "";
+				xpathed = givenPath;
+				path = params[0] + xpathed;
+			} else if (givenPath.contains("#")) {
+				System.out.println(givenPath.indexOf("#"));
+				xpathed = xpathyCss(givenPath.indexOf("#"), givenPath, "id");
+				path = params[0] + xpathed;
+			} else if (givenPath.contains(".")) {
+				System.out.println(givenPath.indexOf("."));
+				xpathed = xpathyCss(givenPath.indexOf("."), givenPath, "class");
+				path = params[0] + xpathed;
+			} else if (givenPath.contains("[") && givenPath.contains("=") && givenPath.contains("]")) { 
+				xpathed = xpathyBracketNotation(givenPath);
+				path = params[0] + xpathed;
 			}
+		}
+	}
+
+	private String xpathyCss(int index, String givenPath, String css_type) {
+		String tag, value;
+		if (index > 0) {
+			if (index < givenPath.length() - 1) {
+				tag = givenPath.substring(0, index);
+				value = givenPath.substring(index + 1, givenPath.length());
+				return "//" + tag + "[@" + css_type + " = '" + value + "']";
+			} else {
+				tag = givenPath.substring(0, index);
+				return "//" + tag;
+			}
+		} else {
+			value = givenPath.substring(1, givenPath.length());
+			if (value.length() > 0) {
+				return "//*[@" + css_type + " = '" + value + "']";
+			} else {
+				return "//" + css_type;
+			}
+		}
+	}
+	
+	private String xpathyBracketNotation(String givenPath) {
+		int bracketIndex = givenPath.indexOf("[");
+		if (bracketIndex > 0) {
+			return "//" + givenPath.substring(0, bracketIndex) + "[@" + givenPath.substring(bracketIndex +1, givenPath.length());
+		} else {
+			return "//*" + "[@" + givenPath.substring(1, givenPath.length());
 		}
 	}
 
