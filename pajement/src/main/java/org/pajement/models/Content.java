@@ -10,7 +10,7 @@ public class Content extends WebObject {
 	public WebObject someMatch1 = new WebObject(path, "div#");
 	public WebObject someMatch2 = new WebObject(path, "#someMatcchers");
 	public WebObject someMatch3 = new WebObject(path, "div.someMatcchers");
-	public WebObject someMatch4 = new WebObject(path, ".a");
+	public WebObject someMatch4 = new WebObject(path, "input[name='username']");
 	public WebObject someMatch5 = new WebObject(path, "div[name = 'something]");
 
 	public Content(String... params) {

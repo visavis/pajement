@@ -14,30 +14,36 @@ public class WebObject {
 	String path = "//*";
 	String url;
 	int indexPosition;
-
+//TODO - consider how to solve nesting objects arrays so they will return proper object instances and not WebObjects.
 	public WebObject(String... params) {
+		//TODO - the parent path should be collected by constructor correctly without passing it as parameter while declaring an object.
 		if (params.length == 0) {
 			path = "//*";
+		} else if (params.length == 1) {
+			path = xpathyPath("//*", params[0]);
+		} else if (params.length == 2) {
+			path = xpathyPath(params[0], params[1]);
 		}
-		if (params.length == 2) {
-			String xpathed;
-			String givenPath = params[1];
-			// TODO Add regexps for tag, id, class and []
-			if (givenPath.matches("(^/+)(.*)")) {
-				xpathed = givenPath;
-				path = params[0] + xpathed;
-			} else if (givenPath.contains("#")) {
-				System.out.println(givenPath.indexOf("#"));
-				xpathed = xpathyCss(givenPath.indexOf("#"), givenPath, "id");
-				path = params[0] + xpathed;
-			} else if (givenPath.contains(".")) {
-				System.out.println(givenPath.indexOf("."));
-				xpathed = xpathyCss(givenPath.indexOf("."), givenPath, "class");
-				path = params[0] + xpathed;
-			} else if (givenPath.contains("[") && givenPath.contains("=") && givenPath.contains("]")) { 
-				xpathed = xpathyBracketNotation(givenPath);
-				path = params[0] + xpathed;
-			}
+	}
+	
+	private String xpathyPath(String parentPath, String givenPath) {
+		String xpathed;
+		if (givenPath.matches("(^/+)(.*)")) {
+			xpathed = givenPath;
+			return parentPath + xpathed;
+		} else if (givenPath.contains("#")) {
+			System.out.println(givenPath.indexOf("#"));
+			xpathed = xpathyCss(givenPath.indexOf("#"), givenPath, "id");
+			return parentPath + xpathed;
+		} else if (givenPath.contains(".")) {
+			System.out.println(givenPath.indexOf("."));
+			xpathed = xpathyCss(givenPath.indexOf("."), givenPath, "class");
+			return parentPath + xpathed;
+		} else if (givenPath.contains("[") && givenPath.contains("=") && givenPath.contains("]")) { 
+			xpathed = xpathyBracketNotation(givenPath);
+			return parentPath + xpathed;
+		} else {
+			return parentPath + "//" + givenPath;
 		}
 	}
 
