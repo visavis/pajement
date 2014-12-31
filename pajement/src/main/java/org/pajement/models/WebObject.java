@@ -1,8 +1,5 @@
 package org.pajement.models;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -14,9 +11,12 @@ public class WebObject {
 	String path = "//*";
 	String url;
 	int indexPosition;
-//TODO - consider how to solve nesting objects arrays so they will return proper object instances and not WebObjects.
+
+	// TODO - consider how to solve nesting objects arrays so they will return
+	// proper object instances and not WebObjects.
 	public WebObject(String... params) {
-		//TODO - the parent path should be collected by constructor correctly without passing it as parameter while declaring an object.
+		// TODO - the parent path should be collected by constructor correctly
+		// without passing it as parameter while declaring an object.
 		if (params.length == 0) {
 			path = "//*";
 		} else if (params.length == 1) {
@@ -25,7 +25,7 @@ public class WebObject {
 			path = xpathyPath(params[0], params[1]);
 		}
 	}
-	
+
 	private String xpathyPath(String parentPath, String givenPath) {
 		String xpathed;
 		if (givenPath.matches("(^/+)(.*)")) {
@@ -39,7 +39,8 @@ public class WebObject {
 			System.out.println(givenPath.indexOf("."));
 			xpathed = xpathyCss(givenPath.indexOf("."), givenPath, "class");
 			return parentPath + xpathed;
-		} else if (givenPath.contains("[") && givenPath.contains("=") && givenPath.contains("]")) { 
+		} else if (givenPath.contains("[") && givenPath.contains("=")
+				&& givenPath.contains("]")) {
 			xpathed = xpathyBracketNotation(givenPath);
 			return parentPath + xpathed;
 		} else {
@@ -67,11 +68,18 @@ public class WebObject {
 			}
 		}
 	}
-	
+
 	private String xpathyBracketNotation(String givenPath) {
 		int bracketIndex = givenPath.indexOf("[");
+		String sign = "";
+
+		if (!givenPath.contains("[text=") && !givenPath.contains("[text =")) {
+			sign = "@";
+		}
+
 		if (bracketIndex > 0) {
-			return "//" + givenPath.substring(0, bracketIndex) + "[@" + givenPath.substring(bracketIndex +1, givenPath.length());
+			return "//" + givenPath.substring(0, bracketIndex) + "[" + sign
+					+ givenPath.substring(bracketIndex + 1, givenPath.length());
 		} else {
 			return "//*" + "[@" + givenPath.substring(1, givenPath.length());
 		}
@@ -160,12 +168,18 @@ public class WebObject {
 	}
 
 	public WebObject containing(String text) {
-		if (path == "") {
-			return new WebObject("//*[text()[contains(normalize-space(), '"
-					+ text + "')]]");
-		} else {
-			return new WebObject(this.path
-					+ "[text()[contains(normalize-space(), '" + text + "')]]");
+		try {
+			if (path == "") {
+				return new WebObject("//*[text()[contains(normalize-space(), '"
+						+ text + "')]]");
+			} else {
+				return new WebObject(this.path
+						+ "[text()[contains(normalize-space(), '" + text
+						+ "')]]");
+			}
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
