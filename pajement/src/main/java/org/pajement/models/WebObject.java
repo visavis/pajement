@@ -7,8 +7,9 @@ import org.openqa.selenium.WebElement;
 import org.pajement.test.TestRun;
 
 public class WebObject {
+	private static final String ROOT_PATH = "//*";
 	WebDriver driver = TestRun.driver;
-	String path = "//*";
+	String path = ROOT_PATH;
 	String url;
 	int indexPosition;
 
@@ -18,13 +19,18 @@ public class WebObject {
 		// TODO - the parent path should be collected by constructor correctly
 		// without passing it as parameter while declaring an object.
 		if (params.length == 0) {
-			path = "//*";
+			path = ROOT_PATH;
 		} else if (params.length == 1) {
-			path = xpathyPath("//*", params[0]);
+			path = xpathyPath(ROOT_PATH, params[0]);
 		} else if (params.length == 2) {
 			path = xpathyPath(params[0], params[1]);
 		}
 	}
+	
+	public WebObject() {
+		this.path = ROOT_PATH;
+	}
+
 
 	private String xpathyPath(String parentPath, String givenPath) {
 		String xpathed;
@@ -32,15 +38,12 @@ public class WebObject {
 			xpathed = givenPath;
 			return parentPath + xpathed;
 		} else if (givenPath.contains("#")) {
-			System.out.println(givenPath.indexOf("#"));
 			xpathed = xpathyCss(givenPath.indexOf("#"), givenPath, "id");
 			return parentPath + xpathed;
 		} else if (givenPath.contains(".")) {
-			System.out.println(givenPath.indexOf("."));
 			xpathed = xpathyCss(givenPath.indexOf("."), givenPath, "class");
 			return parentPath + xpathed;
-		} else if (givenPath.contains("[") && givenPath.contains("=")
-				&& givenPath.contains("]")) {
+		} else if (givenPath.contains("[") && givenPath.contains("=") && givenPath.contains("]")) {
 			xpathed = xpathyBracketNotation(givenPath);
 			return parentPath + xpathed;
 		} else {
@@ -81,7 +84,7 @@ public class WebObject {
 			return "//" + givenPath.substring(0, bracketIndex) + "[" + sign
 					+ givenPath.substring(bracketIndex + 1, givenPath.length());
 		} else {
-			return "//*" + "[@" + givenPath.substring(1, givenPath.length());
+			return ROOT_PATH + "[@" + givenPath.substring(1, givenPath.length());
 		}
 	}
 

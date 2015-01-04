@@ -3,7 +3,9 @@ package org.pajement.models;
 
 public class Content extends WebObject {
 
-	public WebObject header = new WebObject(path, "//h1");
+	private final WebObjectFactory webObjectFactory = new WebObjectFactory();
+	
+	public WebObject header = webObjectFactory.create(path, "//h1");//new WebObject(path, "//h1");
 	public WebObject searchInput = new WebObject(path, "input#gbqfq");
 	public WebObject searchButton = new WebObject(path, "///button[@aria-label='Szukaj w Google']");
 	public ResultsList resultsList = new ResultsList(path, "//div[@class = 'srg']");
@@ -24,4 +26,5 @@ public class Content extends WebObject {
 			super(params);
 		}
 	}
+	
 }
